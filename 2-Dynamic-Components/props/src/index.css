@@ -1,0 +1,32 @@
+/* .h1 {
+  color: red;
+}
+
+.myList{
+  display: flex;
+  width: 400px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+.myList > li {
+  width: 198px;
+  border: 1px solid black;
+} */
+
+/* 
+// -----------------------------Post----------------------------------- */
+
+/* .Post {
+  border: 1px solid gray;
+  margin: 1rem 28rem;
+  padding: 0.5rem;
+  box-shadow: 0px 0px 5px gray;
+  border: 15px;
+  width: 20rem;
+}
+
+button{
+  margin: 1rem
+} */
