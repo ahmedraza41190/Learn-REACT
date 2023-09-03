@@ -1,88 +1,119 @@
-import { useState, useRef } from "react";
-import axios from "axios";
-import logo from "./logo.svg";
-import "./App.css";
 
-function App() {
-  const [cityName, setCityName] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const inputRef = useRef(null);
 
-  const [data, setData] = useState([]);
+//-----------------------------------------------------Methode-1 (mei sirf app.jsx tak hai)---------------------------------------------
 
-  const getWeather = async (event) => {
-    event.preventDefault();
 
-    // const cityName = document.querySelector("#cityName").value;
-    // console.log(`getting weather of ${cityName}...`);
-    // console.log(`getting weather of ${cityName}...`);
-    console.log(`getting weather of ${inputRef.current.value}...`);
+// import { useState, useRef } from "react";
+// import axios from "axios";
+// import logo from "./logo.svg";
+// import "./App.css";
 
-    try {
-      setIsLoading(true);
 
-      const response = await axios.get(
-        `http://api.weatherapi.com/v1/current.json?key=3ccbbf01ea7148599c1154007220608&q=${inputRef.current.value}&aqi=no`
-      );
-      console.log("response: ", response.data);
+// function App() {
+//   const [cityName, setCityName] = useState("");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const inputRef = useRef(null);
 
-      setIsLoading(false);
+//   const [data, setData] = useState([]);
 
-      // setData([response.data, ...data]);
-      setData((prev) => [response.data, ...prev]);
+//   const getWeather = async (event) => {
+//     event.preventDefault();
 
-      event.target.reset();
+//     // const cityName = document.querySelector("#cityName").value;
+//     // console.log(`getting weather of ${cityName}...`);
+//     // console.log(`getting weather of ${cityName}...`);
+//     console.log(`getting weather of ${inputRef.current.value}...`);
 
-      console.log(data);
-    } catch (e) {
-      setIsLoading(false);
-      console.log(e);
-    }
-  };
+//     try {
+//       setIsLoading(true);
 
-  const changeHandler = (event) => {
-    setCityName(event.target.value);
-    // console.log("changeHandler: ", event.target.value);
-  };
+//       const response = await axios.get(
+//         `http://api.weatherapi.com/v1/current.json?key=3ccbbf01ea7148599c1154007220608&q=${inputRef.current.value}&aqi=no`
+//       );
+//       console.log("response: ", response.data);
 
-  return (
-    <div>
-      <h1>Weather App</h1>
+//       setIsLoading(false);
 
-      <form onSubmit={getWeather}>
-        <label htmlFor="cityName">City: </label>
-        <input
-          type="text"
-          id="cityName"
-          maxLength={20}
-          minLength={2}
-          required
-          onChange={changeHandler}
-          ref={inputRef}
-        />
-        <br />
-        <button type="submit">Get Weather</button>
-      </form>
+//       // setData([response.data, ...data]);
+//       setData((prev) => [response.data, ...prev]);
 
-      <br />
-      <hr />
-      <br />
+//       event.target.reset();
 
-      {isLoading ? <div>Loading...</div> : null}
+//       console.log(data);
+//     } catch (e) {
+//       setIsLoading(false);
+//       console.log(e);
+//     }
+//   };
 
-      {data.length ? (
-        data.map((eachWeatherData, index) => (
-          <div key={index}>
-            cityName: {eachWeatherData?.location?.name} {eachWeatherData?.location?.country}
-            <br />
-            temp: {eachWeatherData?.current?.temp_c}
-          </div>
-        ))
-      ) : (
-        <div>No data</div>
-      )}
-    </div>
-  );
-}
+//   const changeHandler = (event) => {
+//     setCityName(event.target.value);
+//     // console.log("changeHandler: ", event.target.value);
+//   };
+
+//   return (
+//     <div>
+//       <h1>Weather App</h1>
+
+//       <form onSubmit={getWeather}>
+//         <label htmlFor="cityName">City: </label>
+//         <input
+//           type="text"
+//           id="cityName"
+//           maxLength={20}
+//           minLength={2}
+//           required
+//           onChange={changeHandler}
+//           ref={inputRef}
+//         />
+//         <br />
+//         <button type="submit">Get Weather</button>
+//       </form>
+
+//       <br />
+//       <hr />
+//       <br />
+
+//       {isLoading ? <div>Loading...</div> : null}
+
+//       {data.length ? (
+//         data.map((eachWeatherData, index) => (
+//           <div key={index}>
+//             cityName: {eachWeatherData?.location?.name} {eachWeatherData?.location?.country}
+//             <br />
+//             temp: {eachWeatherData?.current?.temp_c}
+//           </div>
+//         ))
+//       ) : (
+//         <div>No data</div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+
+//-------------------------------------------Method-2 is Recommmended---------------------------
+
+
+
+//-----------------------------------------------------Methode-2 (mei component ka folder istemaal hua hai) ---------------------------------------------
+
+
+
+
+import logo from './logo.svg';
+import './App.css';
+import Home from './components/home/home.jsx';
+
+
+
+const App = () => <Home />
+
 
 export default App;
