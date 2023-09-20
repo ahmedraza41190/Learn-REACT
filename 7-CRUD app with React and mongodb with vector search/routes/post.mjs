@@ -1,6 +1,5 @@
 
 import express from 'express';
-import { nanoid } from 'nanoid'
 import { client } from './../mongodb.mjs'
 import { ObjectId } from 'mongodb'
 import OpenAI from "openai";
@@ -17,6 +16,7 @@ const openaiClient = new OpenAI({
 
 
 
+// https://baseurl.com/search?q=car
 router.get('/search', async (req, res, next) => {
 
     try {
@@ -32,10 +32,10 @@ router.get('/search', async (req, res, next) => {
         const documents = await col.aggregate([
             {
                 "$search": {
-                    "index": "default",
+                    "index": "vectorIndex",
                     "knnBeta": {
                         "vector": vector,
-                        "path": "plot_embedding",
+                        "path": "embedding",
                         "k": 10 // number of documents
                     },
                     "scoreDetails": true
@@ -44,9 +44,9 @@ router.get('/search', async (req, res, next) => {
             },
             {
                 "$project": {
-                    "plot_embedding": 0,
+                    "embedding": 0,
                     "score": { "$meta": "searchScore" },
-                    "scoreDetails": {"$meta": "searchScoreDetails"}
+                    "scoreDetails": { "$meta": "searchScoreDetails" }
                 }
             }
         ]).toArray();
@@ -83,6 +83,8 @@ router.post('/post', async (req, res, next) => {
         } `);
         return;
     }
+
+    // create vector
 
     try {
         const insertResponse = await col.insertOne({
