@@ -4,14 +4,21 @@ import path from 'path';
 const __dirname = path.resolve();
 import 'dotenv/config';
 import cookieParser from 'cookie-parser'
+import jwt from 'jsonwebtoken';
+
+import { client } from './mongodb.mjs'
+import { ObjectId } from 'mongodb'
+
+const db = client.db("cruddb");
+const col = db.collection("posts");
+const userCollection = db.collection("users");
 
 
 import authRouter from './routes/auth.mjs'
+import postRouter from './routes/post.mjs'
 import commentRouter from './routes/comment.mjs'
 import feedRouter from './routes/feed.mjs'
-import postRouter from './routes/post.mjs'
-import jwt from 'jsonwebtoken';
-
+import unAuthProfileRouter from './unAuthRoutes/profile.mjs'
 
 
 const app = express();
@@ -22,10 +29,11 @@ app.use(cors({
     credentials: true
 }));
 
+
 // /api/v1/login
 app.use("/api/v1", authRouter)
 
-app.use((req, res, next) => { // JWT
+app.use("/api/v1", (req, res, next) => { // JWT
     console.log("cookies: ", req.cookies);
 
     const token = req.cookies.token;
@@ -38,11 +46,15 @@ app.use((req, res, next) => { // JWT
             lastName: decoded.lastName,
             email: decoded.email,
             isAdmin: decoded.isAdmin,
+            _id: decoded._id,
         };
 
         next();
 
     } catch (err) {
+
+        // TODO: match all unauth routes
+        
         res.status(401).send({ message: "invalid token" })
     }
 
@@ -51,17 +63,21 @@ app.use((req, res, next) => { // JWT
 
 app.use("/api/v1", postRouter) // Secure api
 
+
 app.use("/api/v1/ping", (req, res) => {
     res.send("OK");
 })
 
 
-//     /static/vscode_windows.exe
-app.use("/static", express.static(path.join(__dirname, 'static')))
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use('/', express.static(path.join(__dirname, 'web/build')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/web/build/index.html'))
+    // res.redirect('/');
+})
 
-const PORT = process.env.PORT || 5001;
+
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
     console.log(`Example server listening on port ${PORT}`)
 })

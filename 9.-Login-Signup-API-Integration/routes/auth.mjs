@@ -8,8 +8,9 @@ import {
     varifyHash
 } from "bcrypt-inzi";
 
-
 const userCollection = client.db("cruddb").collection("users");
+
+
 
 router.post('/login', async (req, res, next) => {
 
@@ -43,12 +44,13 @@ router.post('/login', async (req, res, next) => {
             const isMatch = await varifyHash(req.body.password, result.password)
 
             if (isMatch) {
-                
+
                 const token = jwt.sign({
-                    isAdmin: false,
+                    isAdmin: result.isAdmin,
                     firstName: result.firstName,
                     lastName: result.lastName,
                     email: req.body.email,
+                    _id: result._id
                 }, process.env.SECRET, {
                     expiresIn: '24h'
                 });
@@ -60,7 +62,14 @@ router.post('/login', async (req, res, next) => {
                 });
 
                 res.send({
-                    message: "login successful"
+                    message: "login successful",
+                    data: {
+                        isAdmin: result.isAdmin,
+                        firstName: result.firstName,
+                        lastName: result.lastName,
+                        email: req.body.email,
+                        _id: result._id
+                    }
                 });
                 return;
             } else {
@@ -76,6 +85,19 @@ router.post('/login', async (req, res, next) => {
         res.status(500).send('server error, please try later');
     }
 })
+
+router.post('/logout', async (req, res, next) => {
+
+    // res.cookie('token', '', {
+    //     httpOnly: true,
+    //     secure: true,
+    //     expires: new Date(Date.now() + 86400000)
+    // });
+
+    res.clearCookie('token');
+    res.send({ message: 'logout successful' });
+})
+
 router.post('/signup', async (req, res, next) => {
 
     if (
@@ -109,6 +131,7 @@ router.post('/signup', async (req, res, next) => {
             const passwordHash = await stringToHash(req.body.password);
 
             const insertResponse = await userCollection.insertOne({
+                isAdmin: false,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,

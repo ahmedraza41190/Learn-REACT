@@ -1,10 +1,14 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import axios from "axios";
 import "./login.css";
 
-const baseUrl = "http://localhost:5001";
+import { GlobalContext } from "../../context/context";
+
+import { baseUrl } from "../../core";
 
 const Login = () => {
+  let { state, dispatch } = useContext(GlobalContext);
+
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
@@ -33,6 +37,11 @@ const Login = () => {
         }
       );
 
+      dispatch({
+        type: "USER_LOGIN",
+        payload: response.data.data,
+      });
+
       console.log("resp: ", response?.data?.message);
       setAlertMessage(response?.data?.message);
     } catch (e) {
@@ -44,6 +53,7 @@ const Login = () => {
   return (
     <div>
       <h1>Login</h1>
+      <div>{JSON.stringify(state)}</div>
 
       <form id="loginForm" onSubmit={LoginSubmitHandler}>
         <label htmlFor="emailInput">Email:</label>

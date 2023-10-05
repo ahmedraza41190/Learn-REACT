@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./home.css";
 
-const baseUrl = "http://localhost:5001";
+import { baseUrl } from "../../core";
 
 const Home = () => {
   const postTitleInputRef = useRef(null);
@@ -19,7 +19,7 @@ const Home = () => {
   const getAllPost = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(`${baseUrl}/api/v1/posts`, {
+      const response = await axios.get(`${baseUrl}/api/v1/feed`, {
         withCredentials: true
       });
       console.log(response.data);
